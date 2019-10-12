@@ -1,8 +1,5 @@
 from django.db import models
 
-
-# Create your models here.
-
 class MovieBookmarks(models.Model):
     user_id = models.IntegerField()
     bookmark_id = models.IntegerField()
@@ -12,7 +9,6 @@ class MovieBookmarks(models.Model):
 
     def __str__(self):
         return 'User Id : {} - Bookmark Id {}'.format(self.user_id, self.bookmark_id)
-
 
 class AppUser(models.Model):
     email = models.CharField(max_length=100)

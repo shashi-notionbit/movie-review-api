@@ -31,7 +31,7 @@ class LoginView(APIView):
                 appUser = AppUser.objects.get(email=serializer.data['email'])
                 if (appUser.email == serializer.data['email'] and appUser.password == serializer.data['password']):
                     return Response({
-                        'token': '1234'
+                        'id': appUser.id
                     }, status=status.HTTP_200_OK)
                 else:
                     return HttpResponseForbidden()
