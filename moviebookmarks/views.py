@@ -1,15 +1,18 @@
 from django.shortcuts import render
 
-from django.http import HttpResponse
+from django.core import exceptions
+
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
 
-from .serializers import UserSerializer, MovieBookmarkSerializer
-from .models import MovieBookmarks
-from django.contrib.auth.models import User
+from .serializers import UserSerializer, MovieBookmarkSerializer, AppUserSerializer
+from .models import MovieBookmarks, AppUser
+
+
 
 class MovieBookmarkView(generics.ListCreateAPIView):
     queryset = MovieBookmarks.objects.all()
@@ -20,13 +23,36 @@ class MovieBookmarkDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = MovieBookmarks.objects.all()
     serializer_class = MovieBookmarkSerializer
 
-class UserView(generics.ListCreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+class LoginView(APIView):
+    def post(self, request):
+        serializer = AppUserSerializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                appUser = AppUser.objects.get(email=serializer.data['email'])
+                if (appUser.email == serializer.data['email'] and appUser.password == serializer.data['password']):
+                    return Response({
+                        'token': '1234'
+                    }, status=status.HTTP_200_OK)
+                else:
+                    return HttpResponseForbidden()
+            except Exception:
+                return HttpResponseForbidden()
+        else:
+            return HttpResponseForbidden()
 
-class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+class RegisterView(APIView):
+    def post(self, request):
+        serializer = AppUserSerializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                appUser = serializer.save()
+                appUser = AppUser.save(appUser)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except Exception:
+                return HttpResponseForbidden()
+        else:
+            return HttpResponseForbidden()
+
 
 # class MovieBookmarkView(APIView):
 #     def get(self):
