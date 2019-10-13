@@ -21,8 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/bookmarks/', views.MovieBookmarkView.as_view()),
     path('api/bookmarks/<int:pk>/', views.MovieBookmarkDetailView.as_view()),
-    # path('api/user/', views.UserView.as_view()),
-    # path('api/user/<int:pk>/', views.UserDetailView.as_view()),
     path('api/login/', views.LoginView.as_view()),
     path('api/register/', views.RegisterView.as_view()),
 ]
